@@ -15,19 +15,29 @@ import 'package:royal/features/betting/presentation/screens/receipt_screen.dart'
 import 'package:royal/features/crypto/presentation/screens/buy_crypto/field_screen.dart';
 import 'package:royal/features/crypto/presentation/screens/buy_crypto/index_screen.dart';
 import 'package:royal/features/crypto/presentation/screens/crypto_transaction_details_screen.dart';
+import 'package:royal/features/crypto/presentation/screens/index_screen.dart';
 import 'package:royal/features/crypto/presentation/screens/sell_crypto/field_screen.dart';
 import 'package:royal/features/crypto/presentation/screens/sell_crypto/index_screen.dart';
 import 'package:royal/features/data/presentation/screens/data_details_screen.dart';
+import 'package:royal/features/data/presentation/screens/gsubz_data_details_screen.dart';
+import 'package:royal/features/data/presentation/screens/gsubz_data_index_screen.dart';
+import 'package:royal/features/data/presentation/screens/gsubz_data_receipt_screen.dart';
 import 'package:royal/features/data/presentation/screens/index_screen.dart';
 import 'package:royal/features/data/presentation/screens/receipt_screen.dart';
 import 'package:royal/features/deposit/presentation/screen/index_screen.dart';
 import 'package:royal/features/electricity/presentation/screens/details_screen.dart';
 import 'package:royal/features/electricity/presentation/screens/index_screen.dart';
 import 'package:royal/features/electricity/presentation/screens/receipt_screen.dart';
+import 'package:royal/features/exam_pin/presentation/screen/gsubz_exam_details_screen.dart';
+import 'package:royal/features/exam_pin/presentation/screen/gsubz_exam_pin_index.dart';
+import 'package:royal/features/exam_pin/presentation/screen/gsubz_exam_receipt_screen.dart';
+import 'package:royal/features/flight/presentation/screens/booking_history_screen.dart';
+import 'package:royal/features/flight/presentation/screens/booking_screen.dart';
 import 'package:royal/features/giftcards/presentation/screens/buy_giftcards/field_details_screen.dart';
 import 'package:royal/features/giftcards/presentation/screens/buy_giftcards/field_screen.dart';
 import 'package:royal/features/giftcards/presentation/screens/buy_giftcards/index_screen.dart';
 import 'package:royal/features/giftcards/presentation/screens/giftcard_transaction_details_screen.dart';
+import 'package:royal/features/giftcards/presentation/screens/index_screen.dart';
 import 'package:royal/features/giftcards/presentation/screens/sell_giftcards/field_details_screen.dart';
 import 'package:royal/features/giftcards/presentation/screens/sell_giftcards/field_screen.dart';
 import 'package:royal/features/giftcards/presentation/screens/sell_giftcards/index_screen.dart';
@@ -42,12 +52,16 @@ import 'package:royal/features/profile/presentation/screen/security/index_screen
 import 'package:royal/features/profile/presentation/screen/security/terms_conditions.dart';
 import 'package:royal/features/profile/presentation/screen/withdrawal_bank/index_screen.dart';
 import 'package:royal/features/recent_transaction/presentation/screens/index_screen.dart';
+import 'package:royal/features/recharge_card/presentations/screens/card_details.dart';
+import 'package:royal/features/recharge_card/presentations/screens/card_receipt.dart';
+import 'package:royal/features/recharge_card/presentations/screens/index.dart';
 import 'package:royal/features/splash/presentation/screens/splash1_screen.dart';
 import 'package:royal/features/splash/presentation/screens/splash_screen.dart';
 import 'package:royal/features/tv/presentation/screens/index_screen.dart';
 import 'package:royal/features/tv/presentation/screens/receipt_screen.dart';
 import 'package:royal/features/tv/presentation/screens/tv_details_screen.dart';
 import 'package:royal/features/wallet/presentation/screens/details_screen.dart';
+import 'package:royal/features/wallet/presentation/screens/index_screen.dart';
 import 'package:royal/features/wallet/presentation/screens/withdraw.dart';
 import 'package:get/get.dart';
 
@@ -83,6 +97,26 @@ class AppRoutes {
         name: RoutesConstant.home,
         page: () => HomeScreen(),
         transition: Transition.zoom),
+    GetPage(
+        name: RoutesConstant.giftcard,
+        page: () => HomeScreen(initialIndex: 1),
+        transition: Transition.zoom),
+
+    GetPage(
+        name: RoutesConstant.crypto,
+        page: () => HomeScreen(initialIndex: 2),
+        transition: Transition.zoom),
+
+    GetPage(
+        name: RoutesConstant.flight_booking_history,
+        page: () => HomeScreen(initialIndex: 3),
+        transition: Transition.zoom),
+
+    GetPage(
+        name: RoutesConstant.profile,
+        page: () => HomeScreen(initialIndex: 4),
+        transition: Transition.zoom),
+
     GetPage(
         name: RoutesConstant.notification,
         page: () => NotificationScreen(),
@@ -175,7 +209,7 @@ class AppRoutes {
         page: () => WalletTransactionDetailsScreen()),
 
     //profile
-    GetPage(name: RoutesConstant.profile, page: () => ProfileIndexScreen()),
+    // GetPage(name: RoutesConstant.profile, page: () => ProfileIndexScreen()),
     GetPage(
         name: RoutesConstant.editprofile,
         page: () => EditProfileScreen(),
@@ -208,6 +242,50 @@ class AppRoutes {
         transition: Transition.rightToLeft),
 
     //deposit
-    GetPage(name: RoutesConstant.deposit, page: () => DepositScreen())
+    GetPage(name: RoutesConstant.deposit, page: () => DepositScreen()),
+
+    //flight
+    GetPage(
+        name: RoutesConstant.flight_booking, page: () => FlightBookingScreen()),
+    //wallet
+    GetPage(name: RoutesConstant.wallet, page: () => WalletScreen()),
+
+    GetPage(
+      name: RoutesConstant.gsubz_data,
+      page: () => const GsubzDataScreen(),
+    ),
+    GetPage(
+      name: RoutesConstant.gsubz_data_details,
+      page: () => const GsubzDataDetailsScreen(),
+    ),
+    GetPage(
+      name: RoutesConstant.gsubz_data_receipt,
+      page: () => const GsubzDataReceiptScreen(),
+    ),
+    GetPage(
+      name: RoutesConstant.gsubz_exam_pin,
+      page: () => const GsubzExamPinScreen(),
+    ),
+    GetPage(
+      name: RoutesConstant.gsubz_exam_pin_details,
+      page: () => const GsubzExamPinDetailsScreen(),
+    ),
+    GetPage(
+      name: RoutesConstant.gsubz_exam_pin_receipt,
+      page: () => const GsubzExamPinReceiptScreen(),
+    ),
+
+    GetPage(
+      name: RoutesConstant.gsubz_recharge_card,
+      page: () => const GsubzRechargeCardScreen(),
+    ),
+    GetPage(
+      name: RoutesConstant.gsubz_recharge_card_details,
+      page: () => const GsubzRechargeCardDetailsScreen(),
+    ),
+    GetPage(
+      name: RoutesConstant.gsubz_recharge_card_receipt,
+      page: () => const GsubzRechargeCardReceiptScreen(),
+    ),
   ];
 }

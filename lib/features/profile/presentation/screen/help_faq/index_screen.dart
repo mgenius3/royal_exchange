@@ -1,3 +1,4 @@
+import 'package:royal/core/theme/colors.dart';
 import 'package:royal/features/profile/controllers/help_faq_controller.dart';
 import 'package:royal/features/profile/data/model/templates_model.dart';
 import 'package:royal/features/profile/data/source/faq_data.dart';
@@ -58,7 +59,7 @@ class HelpFaqScreen extends StatelessWidget {
                                     height: 47.17,
                                     decoration: ShapeDecoration(
                                       color: controller.binary == 0
-                                          ? const Color(0xFF00D09E)
+                                          ? LightThemeColors.primaryColor
                                           : null,
                                       shape: RoundedRectangleBorder(
                                           borderRadius:
@@ -97,7 +98,7 @@ class HelpFaqScreen extends StatelessWidget {
                                     height: 47.17,
                                     decoration: ShapeDecoration(
                                       color: controller.binary == 1
-                                          ? const Color(0xFF00D09E)
+                                          ? LightThemeColors.primaryColor
                                           : null,
                                       shape: RoundedRectangleBorder(
                                           borderRadius:

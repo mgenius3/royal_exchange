@@ -37,6 +37,8 @@ class User {
   final String status;
   final String createdAt;
   final String updatedAt;
+  String? profilePictureUrl;
+  String? cloudinaryPublicId;
 
   User({
     required this.id,
@@ -54,6 +56,8 @@ class User {
     required this.status,
     required this.createdAt,
     required this.updatedAt,
+    this.profilePictureUrl,
+    this.cloudinaryPublicId,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -77,6 +81,8 @@ class User {
       status: json['status'],
       createdAt: json['created_at'],
       updatedAt: json['updated_at'],
+      profilePictureUrl: json['profile_picture_url'],
+      cloudinaryPublicId: json['cloudinary_public_id'],
     );
   }
 
@@ -97,6 +103,8 @@ class User {
       'status': status,
       'created_at': createdAt,
       'updated_at': updatedAt,
+      'profile_picture_url': profilePictureUrl,
+      'cloudinary_public_id': cloudinaryPublicId,
     };
   }
 }

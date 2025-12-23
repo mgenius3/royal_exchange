@@ -24,19 +24,63 @@ class WithdrawalBankController extends GetxController {
   final EditProfileRepository editrepo = EditProfileRepository();
   final UserAuthDetailsController authDetailsController =
       Get.find<UserAuthDetailsController>();
+  var accountName = ''.obs; // Observable account name
+  var isVerifying = false.obs; // Verification loading state
 
   @override
   void onInit() {
     super.onInit();
     fetchBanks(); // Fetch banks when the controller initializes
+    // Auto-verify when account number reaches 10 digits
+    accountNumberController.addListener(_autoVerifyAccount);
+
+    // Clear account name when bank changes
+    ever(selectedBank, (_) {
+      if (accountName.value.isNotEmpty) {
+        accountName.value = '';
+        // Re-verify if account number is complete
+        if (accountNumberController.text.trim().length == 10) {
+          _autoVerifyAccount();
+        }
+      }
+    });
   }
+
+// Auto-verify account when conditions are met
+  void _autoVerifyAccount() {
+    final accountNumber = accountNumberController.text.trim();
+
+    // Clear account name if number is incomplete
+    if (accountNumber.length < 10 && accountName.value.isNotEmpty) {
+      accountName.value = '';
+    }
+
+    // Auto-verify when number is complete and bank is selected
+    if (accountNumber.length == 10 && selectedBank.value != null) {
+      verifyBankAccount();
+    }
+  }
+
+  // bool validateInputs() {
+  //   if (accountNumberController.text.trim().length != 10) {
+  //     showSnackbar('Validation Error', "Enter correct account number");
+  //     return false;
+  //   } else if (selectedBank.value == null) {
+  //     showSnackbar('Validation Error', "Pelease select bank name");
+  //   }
+  //   return true;
+  // }
 
   bool validateInputs() {
     if (accountNumberController.text.trim().length != 10) {
       showSnackbar('Validation Error', "Enter correct account number");
       return false;
     } else if (selectedBank.value == null) {
-      showSnackbar('Validation Error', "Pelease select bank name");
+      showSnackbar('Validation Error', "Please select bank name");
+      return false;
+    } else if (accountName.value.isEmpty) {
+      showSnackbar('Validation Error', "Please verify account number first");
+      return false;
     }
     return true;
   }
@@ -88,6 +132,42 @@ class WithdrawalBankController extends GetxController {
     final storageService = SecureStorageService();
     await storageService.saveData(
         'user_details', jsonEncode(response.toJson()));
+  }
+
+  // Verify bank account
+  // Verify bank account
+  Future<void> verifyBankAccount({bool showSuccessMessage = false}) async {
+    if (accountNumberController.text.trim().length != 10) {
+      return;
+    }
+
+    if (selectedBank.value == null) {
+      return;
+    }
+
+    try {
+      isVerifying(true);
+      accountName.value = ''; // Clear previous name
+
+      final result = await editrepo.verifyBankAccount(
+        accountNumberController.text,
+        selectedBank.value!.code,
+      );
+
+      if (result['success'] == true) {
+        accountName.value = result['account_name'];
+        if (showSuccessMessage) {
+          showSnackbar('Success', 'Account verified successfully');
+        }
+      } else {
+        showSnackbar('Error', result['message'] ?? 'Verification failed');
+      }
+    } catch (e) {
+      Failure failure = ErrorMapper.map(e as Exception);
+      showSnackbar('Error', failure.message);
+    } finally {
+      isVerifying(false);
+    }
   }
 
   @override

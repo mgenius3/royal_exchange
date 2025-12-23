@@ -67,13 +67,17 @@ class CryptoRepository {
   Future<void> transactCrypto(
       Map<String, dynamic> data, String filepath) async {
     try {
-      // Prepare files
+       // Prepare files
 
-      String? file_url = await uploadImageToCloudinary(filepath);
+      // String? file_url = await uploadImageToCloudinary(filepath);
 
-      data['proof_file'] = file_url;
+      // data['proof_file'] = file_url;
 
-      print(data);
+       Map<String, dynamic>? imageJsonResponse =
+          await uploadImageToCloudinary(filepath);
+
+      data['proof_file'] = imageJsonResponse!['image'];
+      data['cloudinary_public_id'] = imageJsonResponse['public_id'];
 
       final response =
           await apiClient.post(ApiUrl.crypto_transaction, data: data);

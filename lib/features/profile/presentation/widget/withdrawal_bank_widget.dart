@@ -38,7 +38,7 @@ class WithdrawalBankWidget extends StatelessWidget {
                           shortenString(
                               userAuthDetailsController
                                       .user.value?.withdrawalBank?.bankName ??
-                                  "Not set",
+                                  "No bank added",
                               25),
                           style: Theme.of(context)
                               .textTheme
@@ -51,7 +51,7 @@ class WithdrawalBankWidget extends StatelessWidget {
                       Text(
                           userAuthDetailsController
                                   .user.value?.withdrawalBank?.accountNumber ??
-                              "nil",
+                              "--",
                           style: Theme.of(context)
                               .textTheme
                               .displayMedium

@@ -106,6 +106,7 @@ import 'package:royal/core/services/secure_storage_service.dart';
 import 'package:royal/core/states/mode.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:royal/features/flight/controllers/booking.dart';
 import 'dart:async';
 import 'routes.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
@@ -188,11 +189,10 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
     }
 
     return GetMaterialApp(
-      title: 'Royal Exchange',
-      debugShowCheckedModeBanner: false,
-      initialRoute: _initialRoutes!,
-      theme: ThemeData(fontFamily: "Urbanist"),
-      getPages: AppRoutes.routes,
-    );
+        title: 'Royal Exchange',
+        debugShowCheckedModeBanner: false,
+        initialRoute: _initialRoutes!,
+        theme: ThemeData(fontFamily: "Urbanist"),
+        getPages: AppRoutes.routes);
   }
 }

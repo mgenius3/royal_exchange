@@ -21,6 +21,7 @@ class ProfileIndexScreen extends StatelessWidget {
         Get.put(EditProfileController());
 
     return ProfileTemplatesWidget(
+      showBack: false,
         data: ProfileTemplatesModel(
       title: "My Profile",
       child: Column(

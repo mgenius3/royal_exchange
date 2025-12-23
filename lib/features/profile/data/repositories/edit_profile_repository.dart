@@ -105,4 +105,37 @@ class EditProfileRepository {
           "An unexpected error occurred while deleting your account. Please try again later.");
     }
   }
+
+
+  Future<Map<String, dynamic>> verifyBankAccount(String accountNumber, String bankCode) async {
+  try {
+    final response = await apiClient.post('${ApiUrl.base_url}/payment/paystack/verify-account',
+        data: {
+          'account_number': accountNumber,
+          'bank_code': bankCode,
+        });
+
+    if (response.data['status'] == 'success') {
+      return {
+        'success': true,
+        'account_name': response.data['data']['account_name'],
+        'account_number': response.data['data']['account_number'],
+      };
+    }
+
+    return {
+      'success': false,
+      'message': response.data['message'] ?? 'Verification failed',
+    };
+  } on DioException catch (e) {
+    final responseData = e.response?.data;
+
+    if (responseData != null && responseData['message'] != null) {
+      throw AppException(responseData['message']);
+    }
+    throw AppException(DioErrorHandler.handleDioError(e));
+  } catch (e) {
+    throw AppException("An unexpected error occurred during verification.");
+  }
+}
 }

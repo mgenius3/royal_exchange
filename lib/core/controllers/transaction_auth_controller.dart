@@ -45,17 +45,41 @@ class TransactionAuthController extends GetxController {
   }
 
   // Set PIN and biometric preference
+  // Future<void> setupAuth(BuildContext context) async {
+  //   await showModalBottomSheet(
+  //     context: context,
+  //     isDismissible: false,
+  //     enableDrag: true,
+  //     isScrollControlled: true,
+  //     builder: (context) => PinSetupModal(
+  //       onPinSet: (pin, useBiometrics) async {
+  //         await _storage.write(key: _pinKey, value: pin);
+  //         await _storage.write(
+  //             key: _useBiometricsKey, value: useBiometrics.toString());
+  //       },
+  //     ),
+  //   );
+  // }
+
   Future<void> setupAuth(BuildContext context) async {
-    await showDialog(
+    await showModalBottomSheet(
       context: context,
-      barrierDismissible: false,
-      builder: (context) => PinSetupModal(
-        onPinSet: (pin, useBiometrics) async {
-          await _storage.write(key: _pinKey, value: pin);
-          await _storage.write(
-              key: _useBiometricsKey, value: useBiometrics.toString());
-        },
-      ),
+      isDismissible: true,
+      enableDrag: true, // 👈 allows swipe down
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) {
+        return PinSetupModal(
+          onPinSet: (pin, useBiometrics) async {
+            await _storage.write(key: _pinKey, value: pin);
+            await _storage.write(
+              key: _useBiometricsKey,
+              value: useBiometrics.toString(),
+            );
+            Navigator.pop(context); // close modal
+          },
+        );
+      },
     );
   }
 
@@ -87,8 +111,6 @@ class TransactionAuthController extends GetxController {
     }
 
     // Show PIN dialog for authentication
-    print('authenticate: Showing PIN dialog');
-    // Show PIN dialog for authentication
     bool? authenticated = await showDialog<bool>(
       context: context,
       barrierDismissible: false,
@@ -109,9 +131,7 @@ class TransactionAuthController extends GetxController {
   // Change PIN only (preserves biometric preference)
 // In TransactionAuthController
   Future<bool> changePin(BuildContext context) async {
-    print('changePin: Starting PIN change process');
     if (!await isPinSet()) {
-      print('changePin: No PIN set, prompting setup');
       await setupAuth(context);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
@@ -132,20 +152,20 @@ class TransactionAuthController extends GetxController {
       return false;
     }
 
-    bool? pinChanged = await showDialog<bool>(
+    bool? pinChanged = await showModalBottomSheet<bool>(
       context: context,
-      barrierDismissible: false,
+      isDismissible: true,
+      enableDrag: true, // 👈 allows swipe down
+      isScrollControlled: true,
       builder: (context) => PinSetupModal(
         onPinSet: (pin, _) async {
           await _storage.write(key: _pinKey, value: pin);
-          print('changePin: New PIN saved = $pin');
         },
         showBiometricsOption: false, // Hide biometric checkbox
       ),
     );
 
     if (pinChanged == true) {
-      print('changePin: PIN changed successfully');
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
             content: Text('PIN changed successfully'),

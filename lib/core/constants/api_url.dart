@@ -1,9 +1,9 @@
 class ApiUrl {
   //Base Url
 
-  // static const base_url = 'http://192.168.0.5:8000/api/v1';
-  // static const domain = 'http://172.27.12.74:8000/';
-  static const domain = 'https://royal-exchange.com.ng/';
+  static const domain = 'http://10.37.215.74:8000/';
+  // static const domain = 'https://6f18a72c005a.ngrok-free.app/';
+  // static const domain = 'https://royal-exchange.com.ng/';
   static const base_url = '${domain}api/v1';
 
   //Auth
@@ -46,4 +46,9 @@ class ApiUrl {
 
   //vtu
   static const vtu_transaction = '/vtu';
+
+  //flight
+  static const flight_bookings = '/flight-bookings';
+
+  static const String gsubz_transaction = '/gsubz';
 }

@@ -11,8 +11,6 @@ class DataNetworkWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final DataIndexController controller = Get.find<DataIndexController>();
 
-    print(controller.selectedNetwork.value);
-
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [

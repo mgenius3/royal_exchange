@@ -1,8 +1,6 @@
 import 'package:royal/core/constants/routes.dart';
 import 'package:royal/core/theme/colors.dart';
 import 'package:royal/core/utils/spacing.dart';
-import 'package:royal/core/models/top_header_model.dart';
-import 'package:royal/core/widgets/top_header_widget.dart';
 import 'package:royal/features/giftcards/controllers/index_controller.dart'; // Assuming this is GiftCardController
 import 'package:royal/features/giftcards/presentation/widgets/giftcards_transaction_list.dart';
 import 'package:flutter/material.dart';
@@ -46,7 +44,7 @@ class GiftCardScreen extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 2, vertical: 3),
                   decoration: ShapeDecoration(
-                    color:  LightThemeColors.primaryColor.withOpacity(.2),
+                    color: LightThemeColors.primaryColor.withOpacity(.2),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -104,7 +102,7 @@ class GiftCardScreen extends StatelessWidget {
                           padding: const EdgeInsets.all(10),
                           decoration: ShapeDecoration(
                             color: controller.buy_or_sell.value == 'sell'
-                                ?  LightThemeColors.primaryColor
+                                ? LightThemeColors.primaryColor
                                 : null,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),

@@ -7,9 +7,13 @@ import 'package:get/get.dart';
 class PersistentBottomBarScaffold extends StatefulWidget {
   /// pass the required items for the tabs and BottomNavigationBar
   final List<PersistentTabItem> items;
+  final int initialIndex;
 
-  const PersistentBottomBarScaffold({Key? key, required this.items})
-      : super(key: key);
+  const PersistentBottomBarScaffold({
+    Key? key,
+    required this.items,
+    this.initialIndex = 0, // Default = Home tab
+  }) : super(key: key);
 
   @override
   _PersistentBottomBarScaffoldState createState() =>
@@ -19,6 +23,12 @@ class PersistentBottomBarScaffold extends StatefulWidget {
 class _PersistentBottomBarScaffoldState
     extends State<PersistentBottomBarScaffold> {
   int _selectedTab = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedTab = widget.initialIndex; // SET the starting tab here
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -69,9 +79,7 @@ class _PersistentBottomBarScaffoldState
                 selectedFontSize: 9, // Font size for selected label
                 unselectedFontSize: 7, // Font size for unselected label
                 selectedLabelStyle: const TextStyle(
-                  fontWeight: FontWeight.w600,
-                  letterSpacing: 0.3,
-                ),
+                    fontWeight: FontWeight.w600, letterSpacing: 0.3),
                 unselectedLabelStyle: const TextStyle(
                   fontWeight: FontWeight.w500,
                   letterSpacing: 0.2,

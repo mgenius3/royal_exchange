@@ -35,7 +35,7 @@ class HomeHeaderWidget extends StatelessWidget {
       return Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          gradient: LinearGradient(
+          gradient: const LinearGradient(
             colors: [Colors.white, const Color(0xFFF9FAFB)],
           ),
           borderRadius: BorderRadius.circular(20),
@@ -79,7 +79,7 @@ class HomeHeaderWidget extends StatelessWidget {
                             const SizedBox(width: 4),
                             const Text(
                               '👋',
-                              style: const TextStyle(fontSize: 16),
+                              style: TextStyle(fontSize: 16),
                             ),
                           ],
                         ),
@@ -97,7 +97,7 @@ class HomeHeaderWidget extends StatelessWidget {
                               style: const TextStyle(
                                 fontSize: 12,
                                 fontWeight: FontWeight.w500,
-                                color:  Color(0xFF6B7280),
+                                color: Color(0xFF6B7280),
                               ),
                             ),
                           ],
@@ -114,38 +114,24 @@ class HomeHeaderWidget extends StatelessWidget {
             // Right side - Actions
             Row(
               children: [
-           
-
                 const SizedBox(width: 10),
 
                 // Settings button
                 GestureDetector(
-                  onTap: () => Get.toNamed(RoutesConstant.profileSecurity),
-                  child: Container(
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                                LightThemeColors.primaryColor,
-                                LightThemeColors.primaryColor.withOpacity(0.8)
-                              ],
-                      ),
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: LightThemeColors.primaryColor.withOpacity(0.3),
-                          blurRadius: 8,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: Icon(
-                      Icons.settings_rounded,
-                      size: 20,
-                      color:  Colors.white,
-                    ),
-                  ),
-                ),
+                    onTap: () => Get.toNamed(RoutesConstant.profile),
+                    child: CircleAvatar(
+                      radius: 20, // Size of avatar
+                      backgroundColor: Colors.grey.shade300,
+                      backgroundImage:
+                          authController.user.value?.profilePictureUrl != null
+                              ? NetworkImage(
+                                  authController.user.value!.profilePictureUrl!)
+                              : null,
+                      child:
+                          authController.user.value?.profilePictureUrl == null
+                              ? const Icon(Icons.person, color: Colors.white)
+                              : null,
+                    )),
               ],
             ),
           ],

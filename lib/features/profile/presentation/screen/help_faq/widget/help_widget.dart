@@ -124,6 +124,14 @@ class HelpWidget extends StatelessWidget {
           'royal001',
           'instagram',
         ),
+        const SizedBox(height: 20),
+        helpList(
+          context,
+          FontAwesomeIcons.twitter,
+          "X",
+          'royal001',
+          'twitter',
+        ),
       ],
     );
   }

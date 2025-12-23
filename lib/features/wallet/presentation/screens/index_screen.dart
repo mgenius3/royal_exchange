@@ -2,6 +2,7 @@ import 'package:royal/core/constants/routes.dart';
 import 'package:royal/core/controllers/user_auth_details_controller.dart';
 import 'package:royal/core/theme/colors.dart';
 import 'package:royal/core/utils/spacing.dart';
+import 'package:royal/features/home/controllers/balance_display_controller.dart';
 import 'package:royal/features/wallet/controllers/index_controller.dart';
 import 'package:royal/features/wallet/data/model/wallet_transaction.dart';
 import 'package:flutter/material.dart';
@@ -21,6 +22,8 @@ class _WalletScreenState extends State<WalletScreen> {
   final WalletController walletController = Get.put(WalletController());
   final UserAuthDetailsController userAuthDetailsController =
       Get.find<UserAuthDetailsController>();
+  final BalanceDisplayController balanceController =
+      Get.find<BalanceDisplayController>();
 
   @override
   Widget build(BuildContext context) {
@@ -84,12 +87,15 @@ class _WalletScreenState extends State<WalletScreen> {
   Widget _buildTopBar() {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 8),
-      child: const Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Row(
         children: [
-          // SizedBox(width: 48),
-          Text(
-            'Wallet',
+          IconButton(
+            icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
+            onPressed: () => Get.back(),
+          ),
+          const SizedBox(width: 12),
+          const Text(
+            'Wallet ',
             style: TextStyle(
               fontSize: 24,
               fontWeight: FontWeight.w800,
@@ -130,30 +136,37 @@ class _WalletScreenState extends State<WalletScreen> {
           ),
           child: Column(
             children: [
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.2),
-                      borderRadius: BorderRadius.circular(8),
+              GestureDetector(
+                onTap: () {
+                  balanceController.toggleBalanceVisibility();
+                },
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.2),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Icon(
+                        balanceController.showBalance.value
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                        color: Colors.white,
+                        size: 14,
+                      ),
                     ),
-                    child: const Icon(
-                      Icons.account_balance_wallet,
-                      color: Colors.white,
-                      size: 20,
+                    const SizedBox(width: 12),
+                    const Text(
+                      'Wallet Balance',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
-                  ),
-                  const SizedBox(width: 12),
-                  const Text(
-                    'Wallet Balance',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               const SizedBox(height: 16),
               Row(
@@ -164,29 +177,14 @@ class _WalletScreenState extends State<WalletScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'NGN ${userAuthDetailsController.user.value?.walletBalance ?? ""}',
+                        balanceController.showBalance.value
+                            ? 'NGN ${userAuthDetailsController.user.value?.walletBalance ?? ""}'
+                            : "••••••••",
                         style: const TextStyle(
                           color: Colors.white,
                           fontSize: 28,
                           fontWeight: FontWeight.w800,
                           letterSpacing: -0.5,
-                        ),
-                      ),
-                      const SizedBox(height: 4),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 8, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
-                          borderRadius: BorderRadius.circular(6),
-                        ),
-                        child: const Text(
-                          'Available Balance',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.w500,
-                          ),
                         ),
                       ),
                     ],

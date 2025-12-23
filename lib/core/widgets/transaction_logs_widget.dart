@@ -394,13 +394,17 @@ class RecentTransactionsWidget extends StatelessWidget {
         if (transactionType.contains('airtime')) {
           route = RoutesConstant.airtime_receipt;
         } else if (transactionType.contains('data')) {
-          route = RoutesConstant.data_receipt;
+          route = RoutesConstant.gsubz_data_receipt;
         } else if (transactionType.contains('electricity')) {
           route = RoutesConstant.electricity_receipt;
         } else if (transactionType.contains('betting')) {
           route = RoutesConstant.betting_receipt;
         } else if (transactionType.contains('tv')) {
           route = RoutesConstant.tv_receipt;
+        } else if (transactionType.contains('recharge')) {
+          route = RoutesConstant.gsubz_recharge_card_receipt;
+        }else if (transactionType.contains('exam')) {
+          route = RoutesConstant.gsubz_exam_pin_receipt;
         }
         if (route != null) {
           Get.toNamed(route, arguments: receiptData);

@@ -38,14 +38,11 @@ class OtherServicesWidget extends StatelessWidget {
         padding: const EdgeInsets.all(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildServicesGrid()
-          ],
+          children: [_buildServicesGrid()],
         ),
       ),
     );
   }
-
 
   Widget _buildServicesGrid() {
     final services = _getServices();
@@ -100,7 +97,7 @@ class OtherServicesWidget extends StatelessWidget {
         color: Color(0xFF0097A7),
         icon: Icons.signal_cellular_4_bar,
         name: "Data",
-        route: RoutesConstant.data,
+        route: RoutesConstant.gsubz_data,
       ),
       const OtherServicesModel(
         color: Color(0xFFF57C00),
@@ -119,6 +116,24 @@ class OtherServicesWidget extends StatelessWidget {
         icon: Icons.live_tv,
         name: "TV",
         route: RoutesConstant.tv,
+      ),
+      const OtherServicesModel(
+        color: Color(0xFF303F9F),
+        icon: Icons.airplanemode_active,
+        name: "Flight",
+        route: RoutesConstant.flight_booking,
+      ),
+      const OtherServicesModel(
+        color: Color(0xFF512DA8),
+        icon: Icons.school, // 🎓 Education
+        name: "Education",
+        route: RoutesConstant.gsubz_exam_pin,
+      ),
+      const OtherServicesModel(
+        color: Color(0xFF00897B),
+        icon: Icons.vpn_key, // 🔑 E-PIN or Recharge PIN
+        name: "Recharge-Pin",
+        route: RoutesConstant.gsubz_recharge_card,
       ),
     ];
   }
@@ -215,247 +230,5 @@ class OtherServicesWidget extends StatelessWidget {
         );
       },
     );
-  }
-}
-
-// Enhanced Compact Version with Modern Styling
-class CompactOtherServicesWidget extends StatelessWidget {
-  const CompactOtherServicesWidget({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 4),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [
-            Colors.white,
-            Colors.grey[50]!,
-          ],
-        ),
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.06),
-            blurRadius: 20,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [Colors.blue[600]!, Colors.blue[700]!],
-                    ),
-                    borderRadius: BorderRadius.circular(10),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.blue.withOpacity(0.3),
-                        blurRadius: 6,
-                        offset: const Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: const Icon(
-                    Icons.grid_view_rounded,
-                    size: 18,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Services',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.w800,
-                        color: Color(0xFF1A1A1A),
-                        letterSpacing: -0.3,
-                      ),
-                    ),
-                    Text(
-                      'Quick access',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.grey[600],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            Wrap(
-              spacing: 10,
-              runSpacing: 12,
-              children: _getCompactServices().asMap().entries.map((entry) {
-                final index = entry.key;
-                final service = entry.value;
-
-                return TweenAnimationBuilder<double>(
-                  duration: Duration(milliseconds: 400 + (index * 80)),
-                  tween: Tween(begin: 0.0, end: 1.0),
-                  builder: (context, value, child) {
-                    return Transform.scale(
-                      scale: 0.8 + (0.2 * value),
-                      child: Opacity(
-                        opacity: value,
-                        child: GestureDetector(
-                          onTap: () => Get.toNamed(service.route),
-                          child: Container(
-                            width: (Get.width - 60) / 4,
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(16),
-                              border: Border.all(
-                                color: service.color.withOpacity(0.15),
-                                width: 1,
-                              ),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: service.color.withOpacity(0.08),
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 4),
-                                ),
-                              ],
-                            ),
-                            child: Material(
-                              color: Colors.transparent,
-                              child: InkWell(
-                                borderRadius: BorderRadius.circular(16),
-                                splashColor: service.color.withOpacity(0.1),
-                                onTap: () {
-                                  HapticFeedback.lightImpact();
-                                  Get.toNamed(service.route);
-                                },
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 12,
-                                    horizontal: 6,
-                                  ),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Container(
-                                        width: 32,
-                                        height: 32,
-                                        decoration: BoxDecoration(
-                                          gradient: LinearGradient(
-                                            colors: [
-                                              service.color.withOpacity(0.2),
-                                              service.color.withOpacity(0.1),
-                                            ],
-                                          ),
-                                          borderRadius:
-                                              BorderRadius.circular(10),
-                                        ),
-                                        child: Icon(
-                                          service.icon,
-                                          color: service.color,
-                                          size: 16,
-                                        ),
-                                      ),
-                                      const SizedBox(height: 6),
-                                      Text(
-                                        service.name,
-                                        textAlign: TextAlign.center,
-                                        style: const TextStyle(
-                                          fontSize: 8,
-                                          fontWeight: FontWeight.w700,
-                                          color: Color(0xFF1A1A1A),
-                                          letterSpacing: -0.1,
-                                          height: 1.0,
-                                        ),
-                                        maxLines: 2,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                );
-              }).toList(),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  List<OtherServicesModel> _getCompactServices() {
-    return [
-      const OtherServicesModel(
-        color: Color(0xFF00C853),
-        icon: Icons.currency_bitcoin,
-        name: "Buy Crypto",
-        route: RoutesConstant.buy_crypto,
-      ),
-      const OtherServicesModel(
-        color: Color(0xFFFF3D00),
-        icon: Icons.trending_down,
-        name: "Sell Crypto",
-        route: RoutesConstant.sell_crypto,
-      ),
-      const OtherServicesModel(
-        color: Color(0xFFAD1457),
-        icon: Icons.card_giftcard,
-        name: "Buy GiftCard",
-        route: RoutesConstant.buy_giftcard,
-      ),
-      const OtherServicesModel(
-        color: Color(0xFF7B1FA2),
-        icon: Icons.redeem,
-        name: "Sell GiftCard",
-        route: RoutesConstant.sell_giftcard,
-      ),
-      const OtherServicesModel(
-        color: Color(0xFF1976D2),
-        icon: Icons.phone_iphone,
-        name: "Airtime",
-        route: RoutesConstant.airtime,
-      ),
-      const OtherServicesModel(
-        color: Color(0xFF0097A7),
-        icon: Icons.signal_cellular_4_bar,
-        name: "Data",
-        route: RoutesConstant.data,
-      ),
-      const OtherServicesModel(
-        color: Color(0xFFF57C00),
-        icon: Icons.bolt,
-        name: "Electricity",
-        route: RoutesConstant.electricity,
-      ),
-      const OtherServicesModel(
-        color: Color(0xFF689F38),
-        icon: Icons.sports_esports,
-        name: "Betting",
-        route: RoutesConstant.betting,
-      ),
-      const OtherServicesModel(
-          color: Color(0xFF303F9F),
-          icon: Icons.live_tv,
-          name: "TV",
-          route: RoutesConstant.tv),
-    ];
   }
 }

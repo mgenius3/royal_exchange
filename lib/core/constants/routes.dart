@@ -17,6 +17,15 @@ class RoutesConstant {
   static const String airtime = '/airtime';
   static const String airtime_details = '/airtime/details';
   static const String airtime_receipt = '/airtime/receipt';
+  static const String wallet = '/wallet';
+
+  static const String education = '/education';
+  static const String epin = '/epin';
+
+  // In routes.dart
+static const gsubz_recharge_card = '/gsubz-recharge-card';
+static const gsubz_recharge_card_details = '/gsubz-recharge-card-details';
+static const gsubz_recharge_card_receipt = '/gsubz-recharge-card-receipt';
 
   static const String data = '/data';
   static const String data_details = '/data/details';
@@ -83,4 +92,18 @@ class RoutesConstant {
 
   //deposit
   static const String deposit = '/deposit';
+
+  //flight
+  static const String flight_booking = '/flight_booking';
+  static const String flight_booking_history = '/flight_booking_history';
+
+  // Gsubz Data routes
+  static const String gsubz_data = '/gsubz-data';
+  static const String gsubz_data_details = '/gsubz-data-details';
+  static const String gsubz_data_receipt = '/gsubz-data-receipt';
+
+  // Gsubz Exam Pin routes
+  static const String gsubz_exam_pin = '/gsubz-exam-pin';
+  static const String gsubz_exam_pin_details = '/gsubz-exam-pin-details';
+  static const String gsubz_exam_pin_receipt = '/gsubz-exam-pin-receipt';
 }

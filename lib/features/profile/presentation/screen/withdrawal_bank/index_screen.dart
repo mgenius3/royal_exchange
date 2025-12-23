@@ -23,6 +23,7 @@ class WithdrawalBankScreen extends StatelessWidget {
         Get.find<TransactionAuthController>();
     return Scaffold(
       body: SafeArea(
+          child: SingleChildScrollView(
         child: GetBuilder<WithdrawalBankController>(
           init: WithdrawalBankController(),
           builder: (controller) {
@@ -123,6 +124,67 @@ class WithdrawalBankScreen extends StatelessWidget {
                     hintText: 'Enter Account Number',
                     // keyboardType: TextInputType.number,
                   )),
+                  const SizedBox(height: 15),
+                  Obx(() => controller.isVerifying.value
+                      ? Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.blue.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: Colors.blue),
+                          ),
+                          child: Row(
+                            children: [
+                              const SizedBox(
+                                width: 20,
+                                height: 20,
+                                child:
+                                    CircularProgressIndicator(strokeWidth: 2),
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                'Verifying account...',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .displayMedium
+                                    ?.copyWith(
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                              ),
+                            ],
+                          ),
+                        )
+                      : controller.accountName.value.isNotEmpty
+                          ? Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: Colors.green.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(color: Colors.green),
+                              ),
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.check_circle,
+                                      color: Colors.green),
+                                  const SizedBox(width: 10),
+                                  Expanded(
+                                    child: Text(
+                                      controller.accountName.value,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .displayMedium
+                                          ?.copyWith(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.w600,
+                                            color: Colors.green,
+                                          ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
+                          : const SizedBox.shrink()),
                   const SizedBox(height: 40),
                   Obx(() => controller.isLoading.value
                       ? CustomPrimaryButton(
@@ -158,7 +220,7 @@ class WithdrawalBankScreen extends StatelessWidget {
             );
           },
         ),
-      ),
+      )),
     );
   }
 }

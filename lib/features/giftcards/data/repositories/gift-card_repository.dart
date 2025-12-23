@@ -48,9 +48,16 @@ class GiftCardRepository {
       Map<String, dynamic> data, String? filepath) async {
     try {
       if (filepath != null) {
-        String? file_url = await uploadImageToCloudinary(filepath);
-        data['proof_file'] = file_url;
+        // String? file_url = await uploadImageToCloudinary(filepath);
+        // data['proof_file'] = file_url;
+
+         Map<String, dynamic>? imageJsonResponse =
+            await uploadImageToCloudinary(filepath);
+
+        data['proof_file'] = imageJsonResponse!['image'];
+        data['cloudinary_public_id'] = imageJsonResponse['public_id'];
       }
+
 
       final response = await apiClient.post(
         ApiUrl.gift_card_transaction,

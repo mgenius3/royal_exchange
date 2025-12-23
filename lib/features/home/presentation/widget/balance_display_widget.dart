@@ -23,9 +23,9 @@ class BalanceDisplayWidget extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        gradient:  LinearGradient(
-          end: Alignment(0.99, -0.12),
-          begin: Alignment(-0.99, 0.12),
+        gradient: LinearGradient(
+          end: const Alignment(0.99, -0.12),
+          begin: const Alignment(-0.99, 0.12),
           colors: [
             LightThemeColors.primaryColor,
             LightThemeColors.primaryColor.withOpacity(0.7),
@@ -53,10 +53,10 @@ class BalanceDisplayWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildHeaderRow(),
-          const SizedBox(height: 20),
+          const SizedBox(height: 25),
           _buildBalanceSection(controller, userAuthController),
-          const SizedBox(height: 16),
-          _buildBottomRow(currencyRateController, userAuthController),
+          const SizedBox(height: 10),
+          // _buildBottomRow(currencyRateController, userAuthController),
         ],
       ),
     );
@@ -129,7 +129,7 @@ class BalanceDisplayWidget extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         HapticFeedback.lightImpact();
-        Get.toNamed(RoutesConstant.recent_transaction);
+        Get.toNamed(RoutesConstant.wallet);
       },
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -145,13 +145,13 @@ class BalanceDisplayWidget extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
-              Icons.history_rounded,
+              Icons.wallet,
               size: 14,
               color: Colors.white,
             ),
             SizedBox(width: 6),
             Text(
-              'History',
+              'Wallet',
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 11,
@@ -159,12 +159,12 @@ class BalanceDisplayWidget extends StatelessWidget {
                 letterSpacing: 0.2,
               ),
             ),
-            SizedBox(width: 4),
-            Icon(
-              Icons.arrow_forward_ios,
-              size: 10,
-              color: Colors.white,
-            ),
+            // SizedBox(width: 4),
+            // Icon(
+            //   Icons.arrow_forward_ios,
+            //   size: 10,
+            //   color: Colors.white,
+            // ),
           ],
         ),
       ),
@@ -173,44 +173,50 @@ class BalanceDisplayWidget extends StatelessWidget {
 
   Widget _buildBalanceSection(BalanceDisplayController controller,
       UserAuthDetailsController userAuthController) {
-    return Obx(() => GestureDetector(
-          onTap: () {
-            HapticFeedback.lightImpact();
-            controller.toggleBalanceVisibility();
-          },
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                controller.showBalance.value
-                    ? '${Symbols.currency_naira}${userAuthController.user.value?.walletBalance ?? 0}'
-                    : "••••••••",
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 32,
-                  fontWeight: FontWeight.w800,
-                  letterSpacing: -1,
-                  height: 1.1,
-                ),
+    return Obx(() => Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            GestureDetector(
+              onTap: () {
+                HapticFeedback.lightImpact();
+                controller.toggleBalanceVisibility();
+              },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    controller.showBalance.value
+                        ? '${Symbols.currency_naira}${userAuthController.user.value?.walletBalance ?? 0}'
+                        : "••••••••",
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 32,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: -1,
+                      height: 1.1,
+                    ),
+                  ),
+                  // const SizedBox(height: 8),
+                  // Container(
+                  //   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  //   decoration: BoxDecoration(
+                  //     color: Colors.white.withOpacity(0.2),
+                  //     borderRadius: BorderRadius.circular(6),
+                  //   ),
+                  //   child: const Text(
+                  //     'Tap to toggle visibility',
+                  //     style: TextStyle(
+                  //       color: Colors.white,
+                  //       fontSize: 10,
+                  //       fontWeight: FontWeight.w500,
+                  //     ),
+                  //   ),
+                  // ),
+                ],
               ),
-              // const SizedBox(height: 8),
-              // Container(
-              //   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              //   decoration: BoxDecoration(
-              //     color: Colors.white.withOpacity(0.2),
-              //     borderRadius: BorderRadius.circular(6),
-              //   ),
-              //   child: const Text(
-              //     'Tap to toggle visibility',
-              //     style: TextStyle(
-              //       color: Colors.white,
-              //       fontSize: 10,
-              //       fontWeight: FontWeight.w500,
-              //     ),
-              //   ),
-              // ),
-            ],
-          ),
+            ),
+            _buildDepositButton(),
+          ],
         ));
   }
 
@@ -334,10 +340,10 @@ class BalanceDisplayWidget extends StatelessWidget {
         Get.toNamed(RoutesConstant.deposit);
       },
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(8),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.1),

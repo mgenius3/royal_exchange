@@ -15,7 +15,7 @@ import 'package:url_launcher/url_launcher.dart';
 // Only import WebView for non-web platforms
 import 'package:royal/core/widgets/webview_screen.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'dart:html' as html; // For web-specific navigation
+// import 'dart:html' as html; // For web-specific navigation
 
 class DepositController extends GetxController {
   final amountController = TextEditingController();
@@ -135,7 +135,7 @@ class DepositController extends GetxController {
       final reference = 'ref_${DateTime.now().millisecondsSinceEpoch}';
 
       if (await canLaunchUrl(paymentUri)) {
-        html.window.location.assign(checkoutUrl);
+        // html.window.location.assign(checkoutUrl);
 
         await launchUrl(
           paymentUri,
@@ -167,7 +167,9 @@ class DepositController extends GetxController {
                   final reference = uri.queryParameters['reference'] ??
                       uri.queryParameters['transaction_id'];
                   if (reference != null) {
-                    verifyPayment(reference, selectedGateway.value);
+                    // verifyPayment(reference, selectedGateway.value);
+
+                    Get.find<UserAuthDetailsController>().getUserDetail();
                   }
                   Get.toNamed(RoutesConstant.home);
                   showSnackbar('Success',
@@ -254,7 +256,8 @@ class DepositController extends GetxController {
           TextButton(
             onPressed: () {
               Get.back();
-              _verifyWebPayment(reference);
+              // _verifyWebPayment(reference);
+              Get.find<UserAuthDetailsController>().getUserDetail();
             },
             child: const Text('I\'ve completed payment'),
           ),
@@ -369,7 +372,6 @@ class DepositController extends GetxController {
           : '${ApiUrl.base_url}/payment/flutterwave/verify/$reference';
 
       bool response = await paymentRepository.verifyPayment(url, gateway);
-      print(response);
       if (response) {
         showSnackbar('Success', 'Payment verified successfully',
             isError: false);
