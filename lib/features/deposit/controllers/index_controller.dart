@@ -15,7 +15,7 @@ import 'package:url_launcher/url_launcher.dart';
 // Only import WebView for non-web platforms
 import 'package:royal/core/widgets/webview_screen.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-// import 'dart:html' as html; // For web-specific navigation
+import 'dart:html' as html; // For web-specific navigation
 
 class DepositController extends GetxController {
   final amountController = TextEditingController();
@@ -135,7 +135,7 @@ class DepositController extends GetxController {
       final reference = 'ref_${DateTime.now().millisecondsSinceEpoch}';
 
       if (await canLaunchUrl(paymentUri)) {
-        // html.window.location.assign(checkoutUrl);
+        html.window.location.assign(checkoutUrl);
 
         await launchUrl(
           paymentUri,

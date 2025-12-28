@@ -54,7 +54,32 @@ class HomeHeaderWidget extends StatelessWidget {
             Expanded(
               child: Row(
                 children: [
-                  const SizedBox(width: 12),
+                  // const SizedBox(width: 12),
+
+                  Row(
+                    children: [
+                      // Settings button
+                      GestureDetector(
+                          onTap: () => Get.toNamed(RoutesConstant.profile),
+                          child: CircleAvatar(
+                            radius: 15, // Size of avatar
+                            backgroundColor: Colors.grey.shade300,
+                            backgroundImage:
+                                authController.user.value?.profilePictureUrl !=
+                                        null
+                                    ? NetworkImage(authController
+                                        .user.value!.profilePictureUrl!)
+                                    : null,
+                            child: authController
+                                        .user.value?.profilePictureUrl ==
+                                    null
+                                ? const Icon(Icons.person, color: Colors.white)
+                                : null,
+                          )),
+                    ],
+                  ),
+                  const SizedBox(width: 10),
+
                   // Greeting Text
                   Expanded(
                     child: Column(
@@ -111,29 +136,9 @@ class HomeHeaderWidget extends StatelessWidget {
 
             const SizedBox(width: 12),
 
-            // Right side - Actions
-            Row(
-              children: [
-                const SizedBox(width: 10),
-
-                // Settings button
-                GestureDetector(
-                    onTap: () => Get.toNamed(RoutesConstant.profile),
-                    child: CircleAvatar(
-                      radius: 20, // Size of avatar
-                      backgroundColor: Colors.grey.shade300,
-                      backgroundImage:
-                          authController.user.value?.profilePictureUrl != null
-                              ? NetworkImage(
-                                  authController.user.value!.profilePictureUrl!)
-                              : null,
-                      child:
-                          authController.user.value?.profilePictureUrl == null
-                              ? const Icon(Icons.person, color: Colors.white)
-                              : null,
-                    )),
-              ],
-            ),
+            GestureDetector(
+                onTap: () => Get.toNamed(RoutesConstant.profileSecurity),
+                child: const Icon(Icons.settings)),
           ],
         ),
       );

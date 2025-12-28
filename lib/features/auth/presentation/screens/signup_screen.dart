@@ -60,7 +60,8 @@ class SignupScreen extends StatelessWidget {
   Widget _buildHeader() {
     return Column(
       children: [
-        const TopHeaderWidget(data: TopHeaderModel(title: "Sign Up")),
+        const TopHeaderWidget(
+            data: TopHeaderModel(title: "Sign Up"), showBackButton: false),
         const SizedBox(height: 10),
         Container(
           width: double.infinity,
@@ -153,8 +154,6 @@ class SignupScreen extends StatelessWidget {
             )),
           ),
           const SizedBox(height: 20),
-
-              
           _buildInputSection(
             'Password',
             Icons.lock_outline,
@@ -226,8 +225,6 @@ class SignupScreen extends StatelessWidget {
               ],
             ),
           ),
-       
-       
         ],
       ),
     );
@@ -249,9 +246,7 @@ class SignupScreen extends StatelessWidget {
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-      
-        ],
+        children: [],
       ),
     );
   }
@@ -341,7 +336,8 @@ class SignupScreen extends StatelessWidget {
                         TextSpan(
                           text: 'Terms of Use',
                           style: TextStyle(
-                            color: LightThemeColors.primaryColor.withOpacity(0.9),
+                            color:
+                                LightThemeColors.primaryColor.withOpacity(0.9),
                             fontSize: 12.93,
                             fontWeight: FontWeight.w600,
                           ),
@@ -355,8 +351,9 @@ class SignupScreen extends StatelessWidget {
                         ),
                         TextSpan(
                           text: 'Privacy Policy',
-                          style: TextStyle( color: LightThemeColors.primaryColor.withOpacity(0.9),
-
+                          style: TextStyle(
+                            color:
+                                LightThemeColors.primaryColor.withOpacity(0.9),
                             fontSize: 12.93,
                             fontWeight: FontWeight.w600,
                           ),

@@ -120,13 +120,13 @@ class OtherServicesWidget extends StatelessWidget {
       const OtherServicesModel(
         color: Color(0xFF303F9F),
         icon: Icons.airplanemode_active,
-        name: "Flight",
+        name: "Flight Booking",
         route: RoutesConstant.flight_booking,
       ),
       const OtherServicesModel(
         color: Color(0xFF512DA8),
         icon: Icons.school, // 🎓 Education
-        name: "Education",
+        name: "Exam Pin",
         route: RoutesConstant.gsubz_exam_pin,
       ),
       const OtherServicesModel(

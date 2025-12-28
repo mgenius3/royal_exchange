@@ -82,15 +82,43 @@ class PinSetupModalState extends State<PinSetupModal> {
             child: Column(
               children: [
                 // Handle bar
-                Container(
-                  width: 40,
-                  height: 4,
-                  margin: const EdgeInsets.only(top: 12, bottom: 20),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(2),
+                // Container(
+                //   width: 40,
+                //   height: 4,
+                //   margin: const EdgeInsets.only(top: 12, bottom: 20),
+                //   decoration: BoxDecoration(
+                //     color: Colors.grey[300],
+                //     borderRadius: BorderRadius.circular(2),
+                //   ),
+                // ),
+
+                Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      // 🆕 ADD THIS: Close Icon Button
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context); // Close modal
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[100],
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Icon(
+                            Icons.close,
+                            size: 20,
+                            color: Colors.grey[700],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
+
                 Expanded(
                   child: SingleChildScrollView(
                     controller: scrollController,
@@ -322,15 +350,43 @@ class PinAuthModalState extends State<PinAuthModal> {
             child: Column(
               children: [
                 // Handle bar
-                Container(
-                  width: 40,
-                  height: 4,
-                  margin: const EdgeInsets.only(top: 12, bottom: 20),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    borderRadius: BorderRadius.circular(2),
+                // Container(
+                //   width: 40,
+                //   height: 4,
+                //   margin: const EdgeInsets.only(top: 12, bottom: 20),
+                //   decoration: BoxDecoration(
+                //     color: Colors.grey[300],
+                //     borderRadius: BorderRadius.circular(2),
+                //   ),
+                // ),
+
+                Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      // 🆕 ADD THIS: Close Icon Button
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context, false); // Close modal
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.grey[100],
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Icon(
+                            Icons.close,
+                            size: 20,
+                            color: Colors.grey[700],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
+
                 Expanded(
                   child: SingleChildScrollView(
                     controller: scrollController,

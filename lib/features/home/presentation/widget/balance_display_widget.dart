@@ -56,7 +56,8 @@ class BalanceDisplayWidget extends StatelessWidget {
           const SizedBox(height: 25),
           _buildBalanceSection(controller, userAuthController),
           const SizedBox(height: 10),
-          // _buildBottomRow(currencyRateController, userAuthController),
+          _buildBottomRow(
+              currencyRateController, userAuthController, controller),
         ],
       ),
     );
@@ -220,20 +221,25 @@ class BalanceDisplayWidget extends StatelessWidget {
         ));
   }
 
-  Widget _buildBottomRow(CurrencyRateController currencyRateController,
-      UserAuthDetailsController userAuthController) {
+  Widget _buildBottomRow(
+      CurrencyRateController currencyRateController,
+      UserAuthDetailsController userAuthController,
+      BalanceDisplayController balancedisplaycontroller) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        _buildDollarEquivalent(currencyRateController, userAuthController),
-        _buildDepositButton(),
+        _buildDollarEquivalent(currencyRateController, userAuthController,
+            balancedisplaycontroller),
+        // _buildDepositButton(),
       ],
     );
   }
 
-  Widget _buildDollarEquivalent(CurrencyRateController currencyRateController,
-      UserAuthDetailsController userAuthController) {
+  Widget _buildDollarEquivalent(
+      CurrencyRateController currencyRateController,
+      UserAuthDetailsController userAuthController,
+      BalanceDisplayController controller) {
     return Obx(() {
       if (currencyRateController.currencyRates.isNotEmpty) {
         final walletBalance = double.tryParse(
@@ -253,31 +259,42 @@ class BalanceDisplayWidget extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(4),
+            controller.showBalance.value
+                ? Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: const Icon(
+                          Icons.currency_exchange,
+                          size: 12,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const SizedBox(width: 6),
+                      Text(
+                        "\$${dollarValue}",
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
+                  )
+                : const Text(
+                    "••••••",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 25,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: -1,
+                      height: 1.1,
+                    ),
                   ),
-                  child: const Icon(
-                    Icons.currency_exchange,
-                    size: 12,
-                    color: Colors.white,
-                  ),
-                ),
-                const SizedBox(width: 6),
-                Text(
-                  "\$${dollarValue}",
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 16,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ],
-            ),
             const SizedBox(height: 2),
             Text(
               "USD Equivalent",

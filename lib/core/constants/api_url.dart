@@ -1,9 +1,9 @@
 class ApiUrl {
   //Base Url
 
-  static const domain = 'http://10.37.215.74:8000/';
+  // static const domain = 'http://10.109.102.74:8000/';
   // static const domain = 'https://6f18a72c005a.ngrok-free.app/';
-  // static const domain = 'https://royal-exchange.com.ng/';
+  static const domain = 'https://royal-exchange.com.ng/';
   static const base_url = '${domain}api/v1';
 
   //Auth

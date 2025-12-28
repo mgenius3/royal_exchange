@@ -23,9 +23,9 @@ class RoutesConstant {
   static const String epin = '/epin';
 
   // In routes.dart
-static const gsubz_recharge_card = '/gsubz-recharge-card';
-static const gsubz_recharge_card_details = '/gsubz-recharge-card-details';
-static const gsubz_recharge_card_receipt = '/gsubz-recharge-card-receipt';
+  static const gsubz_recharge_card = '/gsubz-recharge-card';
+  static const gsubz_recharge_card_details = '/gsubz-recharge-card-details';
+  static const gsubz_recharge_card_receipt = '/gsubz-recharge-card-receipt';
 
   static const String data = '/data';
   static const String data_details = '/data/details';
@@ -54,6 +54,8 @@ static const gsubz_recharge_card_receipt = '/gsubz-recharge-card-receipt';
   //profile - security
   static const String profileSecurity = '/profile/secuity';
   static const String profileSecurityChangePin = '/profile/security/changepin';
+  static const String profileloginSecurity = '/profile/security/login';
+
   static const String profileSecurityTermsAndCondition =
       '/profile/security/termsandcondition';
 

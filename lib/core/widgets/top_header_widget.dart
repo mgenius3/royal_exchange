@@ -6,7 +6,9 @@ import 'package:get/get.dart';
 
 class TopHeaderWidget extends StatefulWidget {
   final TopHeaderModel data;
-  const TopHeaderWidget({super.key, required this.data});
+  final bool showBackButton;
+  const TopHeaderWidget(
+      {super.key, required this.data, this.showBackButton = true});
 
   @override
   State<TopHeaderWidget> createState() => _TopHeaderWidgetState();
@@ -22,7 +24,7 @@ class _TopHeaderWidgetState extends State<TopHeaderWidget> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const BackNavigationWidget(),
+             widget.showBackButton ? const BackNavigationWidget() : const SizedBox(),
               Text(
                 widget.data.title,
                 textAlign: TextAlign.center,

@@ -45,7 +45,10 @@ class AirtimeIndexController extends GetxController {
 
   void setAmount(String amount) {
     selectedAmount.value = amount;
-    // amountController.text = amount;
+    amountController.value = amountController.value.copyWith(
+      text: amount,
+      selection: TextSelection.collapsed(offset: amount.length),
+    );
     checkInformation();
   }
 
@@ -82,7 +85,8 @@ class AirtimeIndexController extends GetxController {
     if (phoneNumber.value.isEmpty) {
       return "Phone number is required.";
     }
-    if (!RegExp(r'^(\+234[0-9]{10}|[0-9]{11})$').hasMatch(phoneNumber.value)) {
+    if (!RegExp(r'^(\+234[0-9]{10}|[0-9]{11})$')
+        .hasMatch(phoneNumber.value.trim())) {
       return "Invalid phone number format.";
     }
     if (selectedAmount.value.isEmpty) {
@@ -108,7 +112,7 @@ class AirtimeIndexController extends GetxController {
 
       final response = await airtimeRepository.buyAirtime(
           user_id: userAuthDetailsController.user.value!.id.toString(),
-          phone: phoneNumber.value,
+          phone: phoneNumber.value.trim(),
           serviceId: serviceId,
           amount: amount,
           requestId: requestId);

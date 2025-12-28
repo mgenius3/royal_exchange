@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:dio/dio.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +11,8 @@ import 'package:royal/core/theme/colors.dart';
 import 'package:royal/core/utils/snackbar.dart';
 import 'package:royal/api/api_client.dart';
 import 'package:royal/core/constants/api_url.dart';
+import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
 
 class ProfilePictureUploadWidget extends StatefulWidget {
   final String userId;
@@ -29,31 +33,79 @@ class _ProfilePictureUploadWidgetState
     extends State<ProfilePictureUploadWidget> {
   final ImagePicker _imagePicker = ImagePicker();
   final authController = Get.find<UserAuthDetailsController>();
-  File? _selectedImage;
+  XFile? _selectedImage;
   bool _isUploading = false;
 
   /// Upload image to Cloudinary
-  Future<Map<String, dynamic>?> uploadImageToCloudinary(
-      String imageFilePath) async {
+  // Future<Map<String, dynamic>?> uploadImageToCloudinary(
+  //     String imageFilePath) async {
+  //   try {
+  //     final url = Uri.parse('https://api.cloudinary.com/v1_1/dung0euqm/upload');
+
+  //     final request = http.MultipartRequest('POST', url)
+  //       ..fields['upload_preset'] = 'davyking'
+  //       ..files.add(await http.MultipartFile.fromPath('file', imageFilePath));
+
+  //     final response = await request.send();
+  //     if (response.statusCode == 200) {
+  //       final responseData = await response.stream.toBytes();
+  //       final responseString = String.fromCharCodes(responseData);
+  //       final jsonMap = jsonDecode(responseString);
+  //       final responseUrl = jsonMap['url'];
+  //       final publicId = jsonMap['public_id'];
+  //       return {"image": responseUrl, "public_id": publicId};
+  //     }
+  //     return null;
+  //   } catch (error) {
+  //     print('Cloudinary upload error: ${error.toString()}');
+  //     return null;
+  //   }
+  // }
+
+  Future<Map<String, dynamic>?> uploadImageToCloudinary(XFile imageFile) async {
     try {
       final url = Uri.parse('https://api.cloudinary.com/v1_1/dung0euqm/upload');
 
       final request = http.MultipartRequest('POST', url)
-        ..fields['upload_preset'] = 'davyking'
-        ..files.add(await http.MultipartFile.fromPath('file', imageFilePath));
+        ..fields['upload_preset'] = 'davyking';
+
+      if (kIsWeb) {
+        // 🌐 WEB → read file as bytes
+        Uint8List imageBytes = await imageFile.readAsBytes();
+
+        request.files.add(
+          http.MultipartFile.fromBytes(
+            'file',
+            imageBytes,
+            filename: imageFile.name,
+          ),
+        );
+      } else {
+        // 📱 MOBILE → use file path
+        request.files.add(
+          await http.MultipartFile.fromPath(
+            'file',
+            imageFile.path,
+          ),
+        );
+      }
 
       final response = await request.send();
+
       if (response.statusCode == 200) {
-        final responseData = await response.stream.toBytes();
-        final responseString = String.fromCharCodes(responseData);
-        final jsonMap = jsonDecode(responseString);
-        final responseUrl = jsonMap['url'];
-        final publicId = jsonMap['public_id'];
-        return {"image": responseUrl, "public_id": publicId};
+        final responseBody = await response.stream.bytesToString();
+        final jsonMap = jsonDecode(responseBody);
+
+        return {
+          "image": jsonMap['secure_url'],
+          "public_id": jsonMap['public_id'],
+        };
+      } else {
+        print('Cloudinary error: ${response.statusCode}');
+        return null;
       }
-      return null;
-    } catch (error) {
-      print('Cloudinary upload error: ${error.toString()}');
+    } catch (e) {
+      print('Cloudinary upload failed: $e');
       return null;
     }
   }
@@ -95,7 +147,7 @@ class _ProfilePictureUploadWidgetState
 
       if (pickedFile != null) {
         setState(() {
-          _selectedImage = File(pickedFile.path);
+          _selectedImage = XFile(pickedFile.path);
         });
 
         // Start upload process
@@ -121,8 +173,7 @@ class _ProfilePictureUploadWidgetState
       // Step 1: Upload to Cloudinary
       showSnackbar('Uploading', 'Uploading image to cloud...', isError: false);
 
-      final cloudinaryResult =
-          await uploadImageToCloudinary(_selectedImage!.path);
+      final cloudinaryResult = await uploadImageToCloudinary(_selectedImage!);
 
       if (cloudinaryResult == null) {
         showSnackbar('Error', 'Failed to upload image to Cloudinary');
@@ -198,6 +249,24 @@ class _ProfilePictureUploadWidgetState
     );
   }
 
+  Widget buildImage(XFile image) {
+    if (kIsWeb) {
+      // 🌐 Web
+      return Image.network(
+        image.path, // blob URL
+        fit: BoxFit.cover,
+        width: 30,
+      );
+    } else {
+      // 📱 Mobile
+      return Image.file(
+        File(image.path),
+        fit: BoxFit.cover,
+        width: 30,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -217,19 +286,25 @@ class _ProfilePictureUploadWidgetState
           child: ClipRRect(
             borderRadius: BorderRadius.circular(60),
             child: _selectedImage != null
-                ? Image.file(
-                    _selectedImage!,
-                    fit: BoxFit.cover,
-                  )
+                ?
+
+                // Image.file(
+                //     File(_selectedImage!.path),
+                //     fit: BoxFit.cover,
+                //     width: 30,
+                //   )
+
+                buildImage(_selectedImage!)
                 : (authController.user.value?.profilePictureUrl != null &&
                         authController.user.value!.profilePictureUrl!.isNotEmpty
                     ? Image.network(
                         authController.user.value!.profilePictureUrl!,
                         fit: BoxFit.cover,
+                        width: 30,
                         errorBuilder: (context, error, stackTrace) => Center(
                           child: Icon(
                             Icons.person,
-                            size: 50,
+                            size: 30,
                             color: Colors.grey[400],
                           ),
                         ),
@@ -237,7 +312,7 @@ class _ProfilePictureUploadWidgetState
                     : Center(
                         child: Icon(
                           Icons.person,
-                          size: 50,
+                          size: 30,
                           color: Colors.grey[400],
                         ),
                       )),

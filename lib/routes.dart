@@ -49,6 +49,7 @@ import 'package:royal/features/profile/presentation/screen/help_faq/index_screen
 import 'package:royal/features/profile/presentation/screen/index_screen.dart';
 import 'package:royal/features/profile/presentation/screen/security/change_pin_screen.dart';
 import 'package:royal/features/profile/presentation/screen/security/index_screen.dart';
+import 'package:royal/features/profile/presentation/screen/security/login_security.dart';
 import 'package:royal/features/profile/presentation/screen/security/terms_conditions.dart';
 import 'package:royal/features/profile/presentation/screen/withdrawal_bank/index_screen.dart';
 import 'package:royal/features/recent_transaction/presentation/screens/index_screen.dart';
@@ -223,6 +224,10 @@ class AppRoutes {
     GetPage(
         name: RoutesConstant.profileSecurityChangePin,
         page: () => ChangePinScreen(),
+        transition: Transition.rightToLeft),
+        GetPage(
+        name: RoutesConstant.profileloginSecurity,
+        page: () => LoginSecurityScreen(),
         transition: Transition.rightToLeft),
     GetPage(
         name: RoutesConstant.profileSecurityTermsAndCondition,

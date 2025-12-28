@@ -1,5 +1,7 @@
 import 'package:royal/core/constants/routes.dart';
+import 'package:royal/core/controllers/currency_rate_controller.dart';
 import 'package:royal/core/controllers/user_auth_details_controller.dart';
+import 'package:royal/core/models/currency_rate_model.dart';
 import 'package:royal/core/theme/colors.dart';
 import 'package:royal/core/utils/spacing.dart';
 import 'package:royal/features/home/controllers/balance_display_controller.dart';
@@ -18,12 +20,21 @@ class WalletScreen extends StatefulWidget {
 }
 
 class _WalletScreenState extends State<WalletScreen> {
-  String selectedFilter = 'All'; // Default filter
+  String selectedTypeFilter =
+      'All'; // Filter by type (All, Deposit, Withdrawal)
+  String selectedStatusFilter =
+      'All'; // Filter by status (All, Success, Pending, Failed)
+
   final WalletController walletController = Get.put(WalletController());
   final UserAuthDetailsController userAuthDetailsController =
       Get.find<UserAuthDetailsController>();
   final BalanceDisplayController balanceController =
       Get.find<BalanceDisplayController>();
+
+  final BalanceDisplayController controller =
+      Get.put(BalanceDisplayController());
+  final userAuthController = Get.find<UserAuthDetailsController>();
+  final currencyRateController = Get.find<CurrencyRateController>();
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +48,8 @@ class _WalletScreenState extends State<WalletScreen> {
             children: [
               _buildTopBar(),
               const SizedBox(height: 24),
-              _buildWalletBalanceCard(),
+              _buildWalletBalanceCard(
+                  currencyRateController, userAuthController, controller),
               const SizedBox(height: 24),
               _buildFilterSection(),
               const SizedBox(height: 20),
@@ -53,16 +65,12 @@ class _WalletScreenState extends State<WalletScreen> {
                       return _buildEmptyState();
                     }
 
-                    // Filter transactions based on selected filter
-                    final filteredTransactions = selectedFilter == 'All'
-                        ? walletController.all_wallet_transaction
-                        : walletController.all_wallet_transaction
-                            .where((tx) =>
-                                tx.status.toLowerCase() ==
-                                (selectedFilter == 'Failed'
-                                    ? 'failed'
-                                    : selectedFilter.toLowerCase()))
-                            .toList();
+                    // 🆕 UPDATED: Apply both filters
+                    final filteredTransactions = _getFilteredTransactions();
+
+                    if (filteredTransactions.isEmpty) {
+                      return _buildEmptyFilterState();
+                    }
 
                     return ListView.separated(
                       physics: const AlwaysScrollableScrollPhysics(),
@@ -82,6 +90,30 @@ class _WalletScreenState extends State<WalletScreen> {
         ),
       ),
     );
+  }
+
+  // 🆕 NEW: Combined filtering by both type and status
+  List<WalletTransactionModel> _getFilteredTransactions() {
+    List<WalletTransactionModel> transactions =
+        walletController.all_wallet_transaction;
+
+    // First filter by type (Deposit/Withdrawal)
+    if (selectedTypeFilter != 'All') {
+      transactions = transactions
+          .where(
+              (tx) => tx.type.toLowerCase() == selectedTypeFilter.toLowerCase())
+          .toList();
+    }
+
+    // Then filter by status (Success/Pending/Failed)
+    if (selectedStatusFilter != 'All') {
+      transactions = transactions
+          .where((tx) =>
+              tx.status.toLowerCase() == selectedStatusFilter.toLowerCase())
+          .toList();
+    }
+
+    return transactions;
   }
 
   Widget _buildTopBar() {
@@ -108,7 +140,10 @@ class _WalletScreenState extends State<WalletScreen> {
     );
   }
 
-  Widget _buildWalletBalanceCard() {
+  Widget _buildWalletBalanceCard(
+      CurrencyRateController currencyRateController,
+      UserAuthDetailsController userAuthController,
+      BalanceDisplayController balancedisplaycontroller) {
     return Obx(() => Container(
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
@@ -141,30 +176,37 @@ class _WalletScreenState extends State<WalletScreen> {
                   balanceController.toggleBalanceVisibility();
                 },
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Icon(
-                        balanceController.showBalance.value
-                            ? Icons.visibility_off
-                            : Icons.visibility,
-                        color: Colors.white,
-                        size: 14,
-                      ),
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Icon(
+                            balanceController.showBalance.value
+                                ? Icons.visibility_off
+                                : Icons.visibility,
+                            color: Colors.white,
+                            size: 14,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        const Text(
+                          'Wallet Balance',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 12),
-                    const Text(
-                      'Wallet Balance',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
+                    _buildDollarEquivalent(currencyRateController,
+                        userAuthController, balancedisplaycontroller)
                   ],
                 ),
               ),
@@ -261,58 +303,240 @@ class _WalletScreenState extends State<WalletScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // 🆕 UPDATED: Header with Transaction History text + type filter icons
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
-                padding: const EdgeInsets.all(8),
-                decoration: BoxDecoration(
-                  color: Colors.blue.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Icon(
-                  Icons.filter_list_rounded,
-                  size: 18,
-                  color: Colors.blue[700],
-                ),
+              // Left side: Filter icon + Transaction History text
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Icon(
+                      Icons.filter_list_rounded,
+                      size: 18,
+                      color: Colors.blue[700],
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  const Text(
+                    'Transaction History',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w700,
+                      color: Color(0xFF1A1A1A),
+                    ),
+                  ),
+                ],
               ),
-              const SizedBox(width: 12),
-              const Text(
-                'Transaction History',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w700,
-                  color: Color(0xFF1A1A1A),
-                ),
+              // 🆕 RIGHT SIDE: Type filter icons (All, Deposit, Withdrawal)
+              Row(
+                children: [
+                  _buildTypeFilterIcon('All', Icons.list, 'All'),
+                  const SizedBox(width: 8),
+                  _buildTypeFilterIcon(
+                      'Deposit', Icons.arrow_downward_rounded, 'Deposit'),
+                  const SizedBox(width: 8),
+                  _buildTypeFilterIcon(
+                      'Withdrawal', Icons.arrow_upward_rounded, 'Withdrawal'),
+                ],
               ),
             ],
           ),
-          const SizedBox(height: 16),
-          _buildFilterTabs(),
+          const SizedBox(height: 20),
+
+          // Status filter section
+          Text(
+            'Transaction Status',
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w600,
+              color: Colors.grey[700],
+            ),
+          ),
+          const SizedBox(height: 10),
+          _buildStatusFilterTabs(),
         ],
       ),
     );
   }
 
-  Widget _buildFilterTabs() {
+  Widget _buildDollarEquivalent(
+      CurrencyRateController currencyRateController,
+      UserAuthDetailsController userAuthController,
+      BalanceDisplayController controller) {
+    return Obx(() {
+      if (currencyRateController.currencyRates.isNotEmpty) {
+        final walletBalance = double.tryParse(
+                userAuthController.user.value?.walletBalance ?? '0') ??
+            0;
+        final ngnRate = currencyRateController.currencyRates.firstWhere(
+          (rate) => rate.currencyCode == 'NGN',
+          orElse: () =>
+              CurrencyRateModel(currencyCode: 'NGN', rate: '0', id: 0),
+        );
+
+        final rateValue =
+            ngnRate.rate.isEmpty ? 1 : num.tryParse(ngnRate.rate) ?? 1;
+
+        final dollarValue = (walletBalance / rateValue).toStringAsFixed(2);
+
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            controller.showBalance.value
+                ? Row(
+                    children: [
+                      Text(
+                        "\$${dollarValue}",
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ],
+                  )
+                : const Text(
+                    "••••••",
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 25,
+                      fontWeight: FontWeight.w800,
+                      letterSpacing: -1,
+                      height: 1.1,
+                    ),
+                  ),
+          ],
+        );
+      }
+
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(4),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.2),
+                  borderRadius: BorderRadius.circular(4),
+                ),
+                child: const Icon(
+                  Icons.currency_exchange,
+                  size: 12,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(width: 6),
+              const Text(
+                "\$0.00",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 2),
+          Text(
+            "USD Equivalent",
+            style: TextStyle(
+              color: Colors.white.withOpacity(0.8),
+              fontSize: 10,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      );
+    });
+  }
+
+// 🆕 NEW: Type filter icon button
+  Widget _buildTypeFilterIcon(String title, IconData icon, String filterValue) {
+    final isSelected = selectedTypeFilter == filterValue;
+    return GestureDetector(
+      onTap: () {
+        HapticFeedback.lightImpact();
+        setState(() {
+          selectedTypeFilter = filterValue;
+        });
+      },
+      child: Tooltip(
+        message: title,
+        child: Container(
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: isSelected
+                ? LightThemeColors.primaryColor.withOpacity(0.2)
+                : Colors.grey[100],
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(
+              color: isSelected
+                  ? LightThemeColors.primaryColor.withOpacity(0.6)
+                  : Colors.grey[300]!,
+              width: isSelected ? 2 : 1,
+            ),
+            boxShadow: isSelected
+                ? [
+                    BoxShadow(
+                      color: Colors.green.withOpacity(0.2),
+                      blurRadius: 6,
+                      offset: const Offset(0, 2),
+                    ),
+                  ]
+                : null,
+          ),
+          child: Icon(
+            icon,
+            size: 18,
+            color:
+                isSelected ? LightThemeColors.primaryColor : Colors.grey[600],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // 🆕 NEW: Type Filter Tabs (All, Deposit, Withdrawal)
+  Widget _buildTypeFilterTabs() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _buildFilterTab('All'),
-        _buildFilterTab('Success'),
-        _buildFilterTab('Pending'),
-        _buildFilterTab('Failed'),
+        _buildTypeFilterTab('All'),
+        _buildTypeFilterTab('Deposit'),
+        _buildTypeFilterTab('Withdrawal'),
       ],
     );
   }
 
-  Widget _buildFilterTab(String title) {
-    final isSelected = selectedFilter == title;
+  // 🆕 NEW: Status Filter Tabs (All, Success, Pending, Failed)
+  Widget _buildStatusFilterTabs() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        _buildStatusFilterTab('All'),
+        _buildStatusFilterTab('Success'),
+        _buildStatusFilterTab('Pending'),
+        _buildStatusFilterTab('Failed'),
+      ],
+    );
+  }
+
+  // 🆕 NEW: Type Filter Tab Builder
+  Widget _buildTypeFilterTab(String title) {
+    final isSelected = selectedTypeFilter == title;
     return Expanded(
       child: GestureDetector(
         onTap: () {
           HapticFeedback.lightImpact();
           setState(() {
-            selectedFilter = title;
+            selectedTypeFilter = title;
           });
         },
         child: Container(
@@ -345,7 +569,56 @@ class _WalletScreenState extends State<WalletScreen> {
             style: TextStyle(
               color: isSelected ? Colors.white : Colors.black,
               fontWeight: FontWeight.w600,
-              fontSize: Get.width < 400 ? 7 : 9,
+              fontSize: 12,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // 🆕 NEW: Status Filter Tab Builder
+  Widget _buildStatusFilterTab(String title) {
+    final isSelected = selectedStatusFilter == title;
+    return Expanded(
+      child: GestureDetector(
+        onTap: () {
+          HapticFeedback.lightImpact();
+          setState(() {
+            selectedStatusFilter = title;
+          });
+        },
+        child: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+          decoration: BoxDecoration(
+            color: isSelected
+                ? LightThemeColors.primaryColor.withOpacity(.6)
+                : Colors.grey[50],
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: isSelected
+                  ? LightThemeColors.primaryColor.withOpacity(.6)
+                  : Colors.grey[300]!,
+              width: 1,
+            ),
+            boxShadow: isSelected
+                ? [
+                    BoxShadow(
+                      color: Colors.green.withOpacity(0.2),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ]
+                : null,
+          ),
+          child: Text(
+            title,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              color: isSelected ? Colors.white : Colors.black,
+              fontWeight: FontWeight.w600,
+              fontSize: 12,
             ),
           ),
         ),
@@ -402,6 +675,46 @@ class _WalletScreenState extends State<WalletScreen> {
           const SizedBox(height: 8),
           Text(
             'Your wallet transactions will appear here',
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey[500],
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildEmptyFilterState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(24),
+            decoration: BoxDecoration(
+              color: Colors.grey[100],
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.filter_alt_off_outlined,
+              size: 48,
+              color: Colors.grey[400],
+            ),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'No transactions matching filter',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600,
+              color: Colors.grey[700],
+            ),
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Try selecting a different filter',
             style: TextStyle(
               fontSize: 14,
               color: Colors.grey[500],
